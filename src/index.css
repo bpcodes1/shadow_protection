@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Barlow Condensed", ui-sans-serif, system-ui, sans-serif;
+  --color-accent: #FFFFFF;
+  --color-accent-hover: #E5E7EB;
+}
+
+@layer base {
+  body {
+    @apply bg-black text-white font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Barlow Condensed", ui-sans-serif, system-ui, sans-serif;
+    @apply font-bold tracking-tight uppercase;
+  }
+}
+
+.glass-card {
+  @apply bg-white/5 backdrop-blur-md border border-white/15 transition-colors duration-300;
+}
+
+.glass-card:hover {
+  @apply border-white/30;
+}
+
+.cta-button {
+  @apply bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-none font-bold uppercase tracking-widest transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer;
+}
+
+@keyframes ping-slow {
+  75%, 100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.animate-ping-slow {
+  animation: ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+.outline-button {
+  @apply border-2 border-white hover:bg-white hover:text-black text-white px-8 py-4 rounded-none font-bold uppercase tracking-widest transition-all duration-300 cursor-pointer;
+}
