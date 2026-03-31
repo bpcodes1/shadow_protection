@@ -30,6 +30,19 @@
   @apply bg-white hover:bg-gray-200 text-black px-8 py-4 rounded-none font-bold uppercase tracking-widest transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer;
 }
 
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-ticker {
+  animation: ticker 30s linear infinite;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
+
 @keyframes ping-slow {
   75%, 100% {
     transform: scale(1.8);

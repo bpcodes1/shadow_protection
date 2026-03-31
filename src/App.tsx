@@ -25,7 +25,7 @@ import {
   ShoppingBag,
   Music
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import logoSrc from "./logo.PNG";
 
 const services = [
@@ -99,6 +99,10 @@ export default function App() {
   const logoY = useTransform(scrollYProgress, [0, 0.2], [0, -50]);
   const logoOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0.8]);
 
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const bgY = useTransform(heroScroll, [0, 1], ["0%", "30%"]);
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -162,13 +166,14 @@ export default function App() {
       )}
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
+      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden pt-24 pb-16">
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-black via-black/85 to-black/60 z-10" />
-          <img
+          <motion.img
+            style={{ y: bgY }}
             src="https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&q=80&w=1920"
             alt="Security Background"
-            className="w-full h-full object-cover grayscale opacity-40"
+            className="absolute inset-0 w-full h-full object-cover grayscale opacity-40 scale-110 origin-center"
             referrerPolicy="no-referrer"
           />
         </div>
@@ -226,20 +231,46 @@ export default function App() {
         </div>
       </section>
 
+      {/* Ticker Bar */}
+      <div className="bg-zinc-950 border-y border-white/10 py-4 overflow-hidden">
+        <div className="flex animate-ticker whitespace-nowrap">
+          {[0, 1].map(i => (
+            <span key={i} className="flex items-center gap-10 px-10 text-xs font-bold uppercase tracking-widest text-gray-500 shrink-0">
+              {["Licensed & Bonded", "24/7 Rapid Response", "Salem, Oregon", "Armed & Unarmed Guards", "Background Checked Personnel", "Event Security Specialists", "Private Investigations", "15+ Years Experience"].map((item, j) => (
+                <span key={j} className="flex items-center gap-10">
+                  <span>{item}</span>
+                  <span className="text-white/30">·</span>
+                </span>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
+
       {/* Services Section */}
       <section id="services" className="py-24 bg-zinc-950">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+          >
             <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">What We Offer</p>
             <h2 className="text-4xl md:text-5xl font-black mb-4">Our Services</h2>
             <div className="w-16 h-px bg-white/40 mx-auto" />
-          </div>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
               <motion.div
                 key={index}
-                whileHover={{ y: -10 }}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -8 }}
                 className="glass-card p-8 group"
               >
                 <div className="text-white mb-6 group-hover:scale-110 transition-transform duration-300">
@@ -259,41 +290,52 @@ export default function App() {
       </section>
 
       {/* Why Shadow Protection */}
-      <section id="about" className="py-24 border-y border-white/5">
+      <section id="about" className="py-24 bg-white text-black border-y border-black/10">
         <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div>
-            <h2 className="text-4xl md:text-5xl font-black mb-8">WHY SHADOW PROTECTION?</h2>
-            <p className="text-xl text-gray-400 mb-12 leading-relaxed">
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <h2 className="text-4xl md:text-5xl font-black mb-8 text-black">WHY SHADOW PROTECTION?</h2>
+            <p className="text-lg text-gray-600 mb-12 leading-relaxed">
               Based in Salem, OR, we provide premium security solutions backed by military-grade discipline and corporate precision. Our mission is your absolute safety.
             </p>
             <div className="grid sm:grid-cols-2 gap-8">
               {trustSignals.map((signal, index) => (
                 <div key={index} className="flex gap-4">
                   <div className="mt-1">
-                    <CheckCircle2 className="w-5 h-5 text-white flex-shrink-0" />
+                    <CheckCircle2 className="w-5 h-5 text-black flex-shrink-0" />
                   </div>
                   <div>
-                    <h4 className="font-black text-lg mb-1">{signal.title}</h4>
+                    <h4 className="font-black text-lg mb-1 text-black">{signal.title}</h4>
                     <p className="text-sm text-gray-500">{signal.description}</p>
                   </div>
                 </div>
               ))}
             </div>
-          </div>
-          <div className="relative mt-4 lg:mt-0">
-            <div className="aspect-square bg-zinc-900 rounded-none overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1582139329536-e7284fece509?auto=format&fit=crop&q=80&w=800" 
-                alt="Security Team" 
+          </motion.div>
+          <motion.div
+            className="relative mt-4 lg:mt-0"
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+          >
+            <div className="aspect-square bg-gray-100 rounded-none overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1582139329536-e7284fece509?auto=format&fit=crop&q=80&w=800"
+                alt="Security Team"
                 className="w-full h-full object-cover grayscale"
                 referrerPolicy="no-referrer"
               />
             </div>
-            <div className="absolute -bottom-8 -left-8 bg-white p-8 hidden md:block">
-              <p className="text-4xl font-black text-black">15+</p>
-              <p className="text-xs font-bold uppercase tracking-widest text-black/70">Years Experience</p>
+            <div className="absolute -bottom-8 -left-8 bg-black p-8 hidden md:block">
+              <p className="text-4xl font-black text-white">15+</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/70">Years Experience</p>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -314,33 +356,53 @@ export default function App() {
               { step: "02", title: "Consultation", desc: "We assess your specific security needs and develop a custom plan." },
               { step: "03", title: "Deployed", desc: "Our elite team is deployed to your site, ensuring total protection." },
             ].map((item, index) => (
-              <div key={index} className="relative z-10 text-center">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, delay: index * 0.15 }}
+                className="relative z-10 text-center"
+              >
                 <div className="w-20 h-20 bg-black border border-white/40 rounded-full flex items-center justify-center mx-auto mb-8 text-2xl font-black text-white">
                   {item.step}
                 </div>
                 <h3 className="text-2xl font-black mb-4">{item.title}</h3>
                 <p className="text-gray-400">{item.desc}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Events We Cover */}
-      <section className="py-24">
+      <section className="py-24 bg-white text-black">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-4">Deployments</p>
-            <h2 className="text-4xl md:text-5xl font-black mb-4">EVENTS WE COVER</h2>
-            <div className="w-16 h-px bg-white/40 mx-auto" />
-          </div>
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Deployments</p>
+            <h2 className="text-4xl md:text-5xl font-black mb-4 text-black">EVENTS WE COVER</h2>
+            <div className="w-16 h-px bg-black/20 mx-auto" />
+          </motion.div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {events.map((event, index) => (
-              <div key={index} className="glass-card p-8 text-center flex flex-col items-center gap-4 hover:bg-white/10 cursor-default">
-                <div className="text-white">{event.icon}</div>
-                <h4 className="font-black text-sm uppercase tracking-widest">{event.title}</h4>
-              </div>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+                className="bg-gray-50 border border-gray-200 p-8 text-center flex flex-col items-center gap-4 hover:bg-gray-100 transition-colors cursor-default"
+              >
+                <div className="text-black">{event.icon}</div>
+                <h4 className="font-black text-sm uppercase tracking-widest text-black">{event.title}</h4>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -357,7 +419,14 @@ export default function App() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((t, index) => (
-              <div key={index} className="glass-card p-8 flex flex-col justify-between">
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="glass-card p-8 flex flex-col justify-between"
+              >
                 <div>
                   <div className="flex gap-1 mb-6">
                     {[...Array(t.rating)].map((_, i) => (
@@ -370,7 +439,7 @@ export default function App() {
                   <h4 className="font-black uppercase tracking-widest text-sm">{t.name}</h4>
                   <p className="text-xs text-gray-500 font-semibold mt-1">{t.role}</p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -378,7 +447,13 @@ export default function App() {
 
       {/* CTA Banner */}
       <section className="py-24 relative overflow-hidden bg-white">
-        <div className="relative z-20 max-w-7xl mx-auto px-6 text-center">
+        <motion.div
+          className="relative z-20 max-w-7xl mx-auto px-6 text-center"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+        >
           <p className="text-xs font-bold text-black/40 uppercase tracking-widest mb-6">Take Action</p>
           <h2 className="text-4xl md:text-6xl font-black mb-6 text-black">YOUR SAFETY IS OUR MISSION</h2>
           <p className="text-sm md:text-base font-semibold mb-12 uppercase tracking-widest text-black/60">
@@ -387,7 +462,7 @@ export default function App() {
           <button className="bg-black text-white hover:bg-zinc-800 px-12 py-5 text-sm font-black uppercase tracking-widest transition-all">
             Request a Quote Now
           </button>
-        </div>
+        </motion.div>
       </section>
 
       {/* Contact & Footer */}
